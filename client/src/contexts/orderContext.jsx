@@ -1,19 +1,22 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
-const orderContext = createContext();
+const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const [orderConstructor, setOrderConstructor] = useState({});
-  const [orderPageInfo, setOrderPageInfo] = useState({});
+  const [orderPageInfo, setOrderPageInfo] = useState({
+    stepperConfig: {
+    }
+  });
 
   return (
-    <orderContext.Provider value={{
+    <OrderContext.Provider value={{
       orderConstructor,
       setOrderConstructor,
       orderPageInfo,
       setOrderPageInfo 
     }}>
       {children}
-    </orderContext.Provider>
+    </OrderContext.Provider>
   );
 };

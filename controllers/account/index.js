@@ -7,6 +7,18 @@ const router = express.Router();
 
 const getpath = (path) => `/account${path}`;
 
+router.get(getpath("/list"), async (req, res) => { 
+  try {
+    const accounts = await Account.find().lean();
+    const richAccounts = await Promise.all(accounts.map(buildRichAccount));
+    res.status(200).json(richAccounts);
+    return;
+  } catch (err) {
+    res.status(500).json(err);
+    return;
+  }
+});
+
 router.get(getpath("/:accountId"), uuidValidator, async (req, res) => { 
   const accountId = req.params.accountId;
   try {
@@ -41,7 +53,7 @@ router.post(getpath("/create"), async (req, res) => {
   }
 });
 
-router.delete(getpath("/delete/:accountId"), adminValidator, uuidValidator, async (req, res) => {
+router.delete(getpath("/:accountId"), adminValidator, uuidValidator, async (req, res) => {
   const accountId = req.params.accountId;
   try {
     await Account.findByIdAndDelete(accountId);

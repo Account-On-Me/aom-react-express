@@ -1,0 +1,7 @@
+README.md
+node_modules
+client/src
+client/public
+client/index.html
+client/README.md
+client/vite.config.js

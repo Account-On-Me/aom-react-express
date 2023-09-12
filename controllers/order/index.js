@@ -19,9 +19,9 @@ const getPath = (path) => `/order${path}`;
  *  payer: string;
  * }[]} 200 - An array of abstract order info 
  */
-router.get(getPath('/list'), async (req, res) => {
+router.get(getPath('/abslist'), async (req, res) => {
   try {
-    const orders = await Order.find().lean();
+    const orders = await Order.find().sort('-date').lean();
     // build abstract order info with Promise all
     const abstractOrders = await Promise.all(orders.map(async (order) => {
       const payer = await Account.findById(order.payer).lean();
@@ -35,6 +35,18 @@ router.get(getPath('/list'), async (req, res) => {
     res.status(200).json(abstractOrders);
   } catch (err) {
     res.status(500).json(err);
+  }
+});
+
+router.get(getPath('/list'), async (req, res) => { 
+  try {
+    const orders = await Order.find().sort('-date').lean();
+    const richOrders = await Promise.all(orders.map(buildRichOrder));
+    res.status(200).json(richOrders);
+    return;
+  } catch (err) {
+    res.status(500).json(err);
+    return;
   }
 });
 
@@ -96,7 +108,7 @@ router.post(getPath('/create'), async (req, res) => {
   }
 });
 
-router.get(getPath('/detail/:orderId'), uuidValidator, async (req, res) => { 
+router.get(getPath('/:orderId'), uuidValidator, async (req, res) => { 
   const orderId = req.params.orderId;
   try {
     const order = Order.findById(orderId).lean();
@@ -114,7 +126,7 @@ router.get(getPath('/detail/:orderId'), uuidValidator, async (req, res) => {
   }
 });
 
-router.delete(getPath('/delete/:orderId'), adminValidator, uuidValidator, async (req, res) => { 
+router.delete(getPath('/:orderId'), adminValidator, uuidValidator, async (req, res) => { 
   const orderId = req.params.orderId;
   try {
     await Order.findByIdAndDelete(orderId);
