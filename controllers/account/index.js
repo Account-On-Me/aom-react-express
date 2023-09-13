@@ -40,7 +40,8 @@ router.get(getpath("/:accountId"), uuidValidator, async (req, res) => {
 router.post(getpath("/create"), async (req, res) => { 
   if (req.body) {
     try {
-      const account = await Account.create(req.body);
+      let account = new Account(req.body);
+      account = await account.save();
       res.status(200).json(account);
       return;
     } catch (err) {

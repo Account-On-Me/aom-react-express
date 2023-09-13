@@ -21,11 +21,12 @@ export const TopAppBarContainer = () => {
       name: 'Home',
     },
     {
+      path: '/create',
+      name: 'Create',
+    },
+    {
       path: '/people',
       name: 'People',
-      params: {
-        text: "Hello from People!"
-      }
     },
   ]
 

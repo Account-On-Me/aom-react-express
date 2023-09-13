@@ -5,7 +5,6 @@ export const PaycheckSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "Account",
-    unique: true,
   },
   shouldPay: Number,
 }, { _id: false });
@@ -37,7 +36,7 @@ export const OrderSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["DEFAULT", "WALMART", "INTERNET", "ENERGY"],
+    enum: ["DEFAULT", "WALMART", "INTERNET", "ENERGY", "TAKEOUT"],
   },
   candidates: {
     type: [mongoose.Schema.Types.ObjectId],

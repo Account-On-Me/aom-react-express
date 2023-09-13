@@ -8,7 +8,6 @@ import {
   Payment,
   Check
 } from "@mui/icons-material"
-import styled from "@emotion/styled"
 
 const testPeople = [
   {
@@ -93,13 +92,13 @@ const PeopleOverview = () => {
   const { setAlert } = useContext(AlertManagerContext);
   const [people, setPeople] = useState([]);
   useEffect(() => {
-    // fetchPeopleList()
-    //   .then((p) => setPeople(p))
-    //   .catch((e) => {
-    //     setAlert({ message: `Failed to load candidates. Please try again.`, type: "error", show: true });
-    //     console.error(e);
-    //   });
-    setPeople(testPeople)
+    fetchPeopleList()
+      .then((p) => setPeople(p))
+      .catch((e) => {
+        setAlert({ message: `Failed to load candidates. Please try again.`, type: "error", show: true });
+        console.error(e);
+      });
+    // setPeople(testPeople)
   }, []);
 
   const PersonCard = ({ person }) => {
@@ -157,8 +156,8 @@ const PeopleOverview = () => {
                     {`Should Pay ${paycheck.candidate.name.split(' ')[0]}: $${paycheck.shouldPay}`}
                   </Typography>
                   <IconButton sx={{
-                    ml: 'auto',
-                    ml: '8px'
+                    // ml: 'auto',
+                    // ml: '8px'
                   }}>
                     <Check sx={{ color: 'green' }} />
                   </IconButton>
@@ -171,9 +170,9 @@ const PeopleOverview = () => {
     }
 
     return (
-      <Card sx={{ padding: "10px", margin: "10px", minWidth: '220px', height: 'fit-content' }}>
+      <Card sx={{ padding: "10px", margin: "10px", minWidth: '265px', height: 'fit-content' }}>
         <CardHeader
-          avatar={<Avatar sx={{ backgroundColor: '#1976d2' }}>{person.name[0].toUpperCase()}</Avatar>}
+          avatar={<Avatar sx={{ backgroundColor: 'primary.main' }}>{person.name[0].toUpperCase()}</Avatar>}
           title={person.name}
           sx={{
             p: '8px',
@@ -234,10 +233,11 @@ const PeopleOverview = () => {
       <Box sx={{
         display: "flex",
         flexDirection: "row",
-        overflowX: "auto",
-        ...ThinScrollBarCSS,
+        // overflowX: "auto",
+        // ...ThinScrollBarCSS,
+        flexWrap: "wrap",
       }}>
-        {!people.length && <Box sx={{ textAlign: "center" }}>No candidates found.</Box>}
+        {!people.length && <Box sx={{ textAlign: "center", p: '15px' }}>No candidates found.</Box>}
         {people.map((p) => (
           <PersonCard person={p} key={p._id} />
         ))}
