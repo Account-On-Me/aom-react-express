@@ -6,6 +6,7 @@ import { OrderContext, OrderProvider } from "../../contexts/orderContext";
 import { PayerTab } from "./PayerTab";
 import { fetchPeopleList } from "../../api/people";
 import { CandidateTab } from "./CandidateTab";
+import { BillDetailTab } from "./BillDetailTab";
 
 const STEPS = [
   {
@@ -22,7 +23,7 @@ const STEPS = [
   },
   {
     label: "Bill Details",
-    component: <div>Bill Details Tab</div>,
+    component: <BillDetailTab />,
   }
 ]
 
