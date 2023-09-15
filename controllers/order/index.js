@@ -113,7 +113,7 @@ router.get(getPath('/:orderId'), uuidValidator, async (req, res) => {
   try {
     const order = Order.findById(orderId).lean();
     if (!order) {
-      res.status(404).json(new ErrorResponse(1, "No order found."));
+      res.status(404).json({ message: 'Order Not Found' });
       return;
     }
     const richOrder = await buildRichOrder(order);

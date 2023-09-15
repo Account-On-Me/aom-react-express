@@ -24,7 +24,7 @@ router.get(getpath("/:accountId"), uuidValidator, async (req, res) => {
   try {
     const account = await Account.findById(accountId).lean();
     if (!account) {
-      res.status(404).json(new ErrorResponse(1, "No account found."));
+      res.status(404).json({message: 'Account Not Found'});
       return;
     }
     const richAccount = await buildRichAccount(account);

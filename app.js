@@ -17,7 +17,7 @@ app.use(express.static(path.join(path.dirname(fileURLToPath(import.meta.url)), "
 // Database test
 app.use((req, res, next) => {
   if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
-    res.status(500).json(new ErrorResponse(-1, "Unable to connect to the database."));
+    res.status(500).json({ message: "Unable to connect to the database."});
     return;
   }
   next();
