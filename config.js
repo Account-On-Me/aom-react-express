@@ -9,7 +9,6 @@ export const config = {
     port: process.env.PORT || 8888
   },
   systemInfo: {
-    taxRate: process.env.TAX_RATE || 0.07,
     adminToken: process.env.ADMIN_PWD || "admin",
   }
 } 

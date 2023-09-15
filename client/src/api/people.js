@@ -20,3 +20,10 @@ export const deletePerson = (id, auth) => {
     },
   });
 }
+
+export const claimPaycheck = (accountId, targetId) => { 
+  return POST('/account/claimPaied', {
+    accountId,
+    targetId,
+  });
+}

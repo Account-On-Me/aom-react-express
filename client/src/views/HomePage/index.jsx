@@ -1,7 +1,7 @@
 import { Avatar, Badge, Box, Button, Card, CardActions, CardContent, CardHeader, Collapse, IconButton, List, ListItem, Paper, Typography } from "@mui/material"
 import { Fragment, useContext, useEffect, useState } from "react"
 import { AlertManagerContext } from "../../components/AlertManager"
-import { fetchPeopleList } from "../../api/people"
+import { claimPaycheck, fetchPeopleList } from "../../api/people"
 import { ThinScrollBarCSS } from "../../css/themes"
 import {
   ExpandMore as ExpandMoreIcon,
@@ -103,13 +103,23 @@ const PeopleOverview = () => {
 
   const PersonCard = ({ person }) => {
     const [expanded, setExpanded] = useState(false);
+    const handleClaimPaycheck = (targetId) => { 
+      claimPaycheck(person._id, targetId)
+        .then((res) => {
+          setAlert({ message: `Paycheck claimed successfully!`, type: "success", show: true });
+          setPeople(people.map((p) => p._id === person._id ? res : p))
+        }).catch((e) => { 
+          setAlert({ message: `Failed to claim paycheck. Please try again.`, type: "error", show: true });
+          console.error(e);
+        });
+    }
 
     const PaycheckList = ({ paychecks }) => {
 
       return (
         <List>
-          {paychecks.map((paycheck) => (
-            <ListItem key={paycheck._id} sx={{
+          {paychecks.map((paycheck, index) => (
+            <ListItem key={index} sx={{
               p: '8px 0 8px 0',
               width: '100%',
               border: '1px solid #bdbdbd78',
@@ -155,10 +165,7 @@ const PeopleOverview = () => {
                   }}>
                     {`Should Pay ${paycheck.candidate.name.split(' ')[0]}: $${paycheck.shouldPay}`}
                   </Typography>
-                  <IconButton sx={{
-                    // ml: 'auto',
-                    // ml: '8px'
-                  }}>
+                  <IconButton onClick={() => handleClaimPaycheck(paycheck.candidate._id)}>
                     <Check sx={{ color: 'green' }} />
                   </IconButton>
                 </Box>

@@ -66,4 +66,43 @@ router.delete(getpath("/:accountId"), adminValidator, uuidValidator, async (req,
   }
 });
 
+router.post(getpath("/claimPaied"), async (req, res) => { 
+  if (req.body) {
+    const { accountId, targetId } = req.body;
+    try {
+      const account = await Account.findById(accountId);
+      if (!account) {
+        res.status(404).json({ message: 'Account Not Found' });
+        return;
+      }
+      // find target in remainingPaychecks, it should be there
+      let found = false;
+      let tbdIndex = -1;
+      for (let index=0; index<account.remainingPaychecks.length; index++) {
+        const paycheck = account.remainingPaychecks[index];
+        if (paycheck.candidate.toString() === targetId.toString()) {
+          // delete it
+          tbdIndex = index;
+          found = true;
+          break;
+        }
+      }
+      if (!found) { 
+        res.status(404).json({ message: 'Target Not Found' });
+        return;
+      }
+      account.remainingPaychecks.splice(tbdIndex, 1);
+      let result = await account.save();
+      res.status(200).json(result);
+      return;
+    } catch (err) {
+      res.status(500).json(err);
+      return;
+    }
+  } else {
+    res.status(400).json({ message: 'Missing request body' });
+    return;
+  }
+});
+
 export default router;

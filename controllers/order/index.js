@@ -38,7 +38,7 @@ router.get(getPath('/abslist'), async (req, res) => {
   }
 });
 
-router.get(getPath('/list'), async (req, res) => { 
+router.get(getPath('/list'), async (req, res) => {
   try {
     const orders = await Order.find().sort('-date').lean();
     const richOrders = await Promise.all(orders.map(buildRichOrder));
@@ -54,12 +54,11 @@ router.get(getPath('/list'), async (req, res) => {
  * @route POST /order/create
  * @description Create an order.
  */
-router.post(getPath('/create'), async (req, res) => { 
+router.post(getPath('/create'), async (req, res) => {
   if (req.body) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
-      const session = await mongoose.startSession();
-      session.startTransaction();
-
       const newOrder = new Order(req.body);
       // calculate paychecksTotal
       const paychecksTotal = calculateTotalPaychecks(newOrder);
@@ -69,7 +68,7 @@ router.post(getPath('/create'), async (req, res) => {
       // update account info associated with this order
       const candidates = await Account.find({ _id: { $in: newOrder.candidates } });
       const payerId = newOrder.payer;
-      for (let candidate of candidates) { 
+      for (let candidate of candidates) {
         if (candidate._id.toString() === payerId.toString()) {
           continue;
         }
@@ -91,24 +90,25 @@ router.post(getPath('/create'), async (req, res) => {
           });
         }
       }
+      // update payer's remainingPaychecks
+      await Promise.all(candidates.map((candidate) => candidate.save()));
 
       await session.commitTransaction();
     } catch (err) {
       await session.abortTransaction();
       res.status(500).json(err);
       return;
-    } finally {
-      session.endSession();
-      res.status(200).json({ message: 'Success' });
-      return;
     }
+    session.endSession();
+    res.status(200).json({ message: 'Success' });
+    return;
   } else {
     res.status(400).json({ message: 'Missing request body' });
     return;
   }
 });
 
-router.get(getPath('/:orderId'), uuidValidator, async (req, res) => { 
+router.get(getPath('/:orderId'), uuidValidator, async (req, res) => {
   const orderId = req.params.orderId;
   try {
     const order = Order.findById(orderId).lean();
@@ -126,7 +126,7 @@ router.get(getPath('/:orderId'), uuidValidator, async (req, res) => {
   }
 });
 
-router.delete(getPath('/:orderId'), adminValidator, uuidValidator, async (req, res) => { 
+router.delete(getPath('/:orderId'), adminValidator, uuidValidator, async (req, res) => {
   const orderId = req.params.orderId;
   try {
     await Order.findByIdAndDelete(orderId);
