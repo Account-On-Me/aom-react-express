@@ -32,8 +32,8 @@ export const TopAppBarContainer = () => {
 
   return (
     <Box sx={{
-      width: "100%",
-      height: "100%",
+      width: "100vw",
+      height: "100vh",
     }}>
       <AppBar position="static" sx={{ flexDirection: "row", p: '5px 0 5px 0'}}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, ml: '10px' }}>
