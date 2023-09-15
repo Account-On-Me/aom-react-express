@@ -91,6 +91,11 @@ router.post(getpath("/claimPaied"), async (req, res) => {
         res.status(404).json({ message: 'Target Not Found' });
         return;
       }
+      // add Record to paymentRecords
+      account.paymentRecords.push({
+        amount: account.remainingPaychecks[tbdIndex].shouldPay,
+        to: targetId,
+      });
       account.remainingPaychecks.splice(tbdIndex, 1);
       let result = await account.save();
       res.status(200).json(result);
