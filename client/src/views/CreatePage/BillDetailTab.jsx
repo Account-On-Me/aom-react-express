@@ -159,6 +159,8 @@ const OrderItemPanel = ({ item, updateItem, deleteItem }) => {
             src={item.thumbnail}
             alt="Item"
             loading="lazy"
+            width={SCALES.thumbnailSize}
+            height={SCALES.thumbnailSize}
             sx={{
               width: SCALES.thumbnailSize,
               height: SCALES.thumbnailSize,
