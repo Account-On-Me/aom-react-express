@@ -1,12 +1,12 @@
+import { AddShoppingCart, DeleteForever, DoneOutline, Edit } from "@mui/icons-material";
+import { Box, Chip, Divider, IconButton, InputBase, List, ListItem, MenuItem, Paper, Select, Skeleton, Slide, Switch, TextField, Typography } from "@mui/material";
+import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { Fragment, useContext, useEffect, useState } from "react";
 import { AlertManagerContext } from "../../components/AlertManager";
 import { OrderContext } from "../../contexts/orderContext";
-import { Box, Chip, Divider, IconButton, InputBase, List, ListItem, MenuItem, Paper, Select, Skeleton, Slide, Switch, TextField, Typography } from "@mui/material";
-import { AddShoppingCart, Edit, DoneOutline, DeleteForever } from "@mui/icons-material";
-import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { calculatePaychecks } from "../../utils/orderUtils";
 
-const defaultNewItem = {
+const getDefaultNewItem = () => ({
   name: "Item",
   price: 0,
   quantity: 1,
@@ -19,7 +19,7 @@ const defaultNewItem = {
     ratio: {},
     manual: {},
   },
-}
+})
 
 const SCALES = {
   thumbnailSize: '250px',
@@ -49,7 +49,9 @@ export const BillDetailTab = () => {
   const handleItemAdd = () => {
     setOrderConstructor(prev => {
       const newItems = [...prev.items];
-      newItems.push(defaultNewItem);
+      const item = getDefaultNewItem();
+      item.candidateIds = prev.candidateIds;
+      newItems.push(item);
       return { ...prev, items: newItems };
     });
   }
@@ -117,7 +119,7 @@ const OrderItemPanel = ({ item, updateItem, deleteItem }) => {
   const [itemState, setItemState] = useState({ ...item });
   const { orderConstructor } = useContext(OrderContext);
 
-  const handleEditConfirm = () => { 
+  const handleEditConfirm = () => {
     setEditing(false)
     updateItem(itemState);
   }
